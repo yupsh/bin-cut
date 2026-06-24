@@ -1,0 +1,32 @@
+# Continuous integration: run the full quality gate on every push and PR.
+#
+# Prerequisite: the private github.com/gloo-foo/* dependencies must be
+# resolvable in CI (see release.yml). Until gloo-foo is public, uncomment the
+# private-module access step below and provide a GORELEASER_TOKEN secret.
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.26'
+          check-latest: true
+          cache: true
+
+      # Until gloo-foo is public, uncomment to authenticate to the private deps:
+      # - name: private module access
+      #   run: |
+      #     git config --global url."https://x-access-token:${{ secrets.GORELEASER_TOKEN }}@github.com/".insteadOf "https://github.com/"
+      #     echo "GOPRIVATE=github.com/gloo-foo" >> "$GITHUB_ENV"
+
+      - name: quality gate
+        run: make check
