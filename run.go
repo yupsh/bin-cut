@@ -13,6 +13,8 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
+const name = "cut"
+
 // Error is the sentinel error type emitted by this package.
 type Error string
 
@@ -58,7 +60,7 @@ func run(version string, args []string, stdin io.Reader, stdout, stderr io.Write
 	cmd.Writer = stdout
 	cmd.ErrWriter = stderr
 	if err := cmd.Run(context.Background(), args); err != nil {
-		_, _ = fmt.Fprintf(stderr, "cut: %v\n", err)
+		_, _ = fmt.Fprintf(stderr, name+": %v\n", err)
 		return 1
 	}
 	return 0
@@ -66,7 +68,7 @@ func run(version string, args []string, stdin io.Reader, stdout, stderr io.Write
 
 func newApp(version string, stdin io.Reader, stdout io.Writer, fs afero.Fs) *cli.Command {
 	return &cli.Command{
-		Name:            "cut",
+		Name:            name,
 		Version:         version,
 		Usage:           "remove sections from each line of files",
 		UsageText:       usageText,

@@ -1,18 +1,8 @@
-# Tag-triggered release. Pushing a semver tag (e.g. v1.2.3) builds the
-# cross-platform binaries with goreleaser and publishes a GitHub Release.
-#
-# Prerequisite: the private github.com/gloo-foo/* dependencies must be
-# resolvable in CI. Locally they resolve through a gitignored go.work; in CI
-# they resolve once gloo-foo is public (and tagged under its current module
-# paths), at which point this workflow needs no extra secret. Until then, add a
-# token with read access to gloo-foo and a `GOPRIVATE=github.com/gloo-foo`
-# step (see the commented block below).
 name: Release
 
 on:
   push:
-    tags:
-      - "v*"
+    tags: ["v*"]
 
 permissions:
   contents: write
@@ -21,23 +11,14 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
-          fetch-depth: 0
-
+          fetch-depth: 0   # full history + tags for the goreleaser changelog
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.26'
+          go-version: "1.26"
           check-latest: true
           cache: true
-
-      # Until gloo-foo is public, uncomment to authenticate to the private deps:
-      # - name: private module access
-      #   run: |
-      #     git config --global url."https://x-access-token:${{ secrets.GORELEASER_TOKEN }}@github.com/".insteadOf "https://github.com/"
-      #     echo "GOPRIVATE=github.com/gloo-foo" >> "$GITHUB_ENV"
-
-      - name: goreleaser release
-        run: go tool goreleaser release --clean
+      - run: make release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
