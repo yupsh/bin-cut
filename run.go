@@ -75,9 +75,21 @@ func newApp(version string, stdin io.Reader, stdout io.Writer, fs afero.Fs) *cli
 		// os.Exit, so the exit code stays testable.
 		ExitErrHandler: func(context.Context, *cli.Command, error) {},
 		Flags: []cli.Flag{
-			&cli.StringFlag{Name: flagDelimiter, Aliases: []string{"d"}, Usage: "use DELIM instead of TAB for field delimiter"},
-			&cli.StringFlag{Name: flagFields, Aliases: []string{"f"}, Usage: "select only these fields (comma-separated list)"},
-			&cli.StringFlag{Name: flagChars, Aliases: []string{"c"}, Usage: "select only these characters (e.g. 1-3,5)"},
+			&cli.StringFlag{
+				Name:    flagDelimiter,
+				Aliases: []string{"d"},
+				Usage:   "use DELIM instead of TAB for field delimiter",
+			},
+			&cli.StringFlag{
+				Name:    flagFields,
+				Aliases: []string{"f"},
+				Usage:   "select only these fields (comma-separated list)",
+			},
+			&cli.StringFlag{
+				Name:    flagChars,
+				Aliases: []string{"c"},
+				Usage:   "select only these characters (e.g. 1-3,5)",
+			},
 			&cli.StringFlag{Name: flagBytes, Aliases: []string{"b"}, Usage: "select only these bytes (e.g. 1-3,5)"},
 			&cli.BoolFlag{Name: flagComplement, Usage: "complement the set of selected bytes, characters or fields"},
 		},
